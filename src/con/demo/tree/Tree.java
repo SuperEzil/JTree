@@ -1,5 +1,7 @@
 package con.demo.tree;
 
+import con.demo.tree.node.Node;
+
 import java.util.Random;
 
 public class Tree {
@@ -21,6 +23,10 @@ public class Tree {
         7. filter("5")  : 10진수 자릿수 수 수집 (10000, -20032, 98033, -43011, ...
 */
 
+
+    private Node mNode = null;
+
+
     /**
      *
      * @param range 난수 생성 범위(-2,147,483,648 ~2,147,483,647) 중 생성됨.
@@ -30,11 +36,24 @@ public class Tree {
         Random generator = new Random();
 
         for (int i = 0; i < range; i++) {
-          int numb = generator.nextInt();
+          int numb = generator.nextInt(range);
           if (Main.DEBUG_MODE){
                 System.out.println(String.format("Random index(%d): %d", i, numb));
           }
+
+            if (mNode == null) {
+                mNode = new Node(numb);
+            }else{
+                mNode.addNode(new Node(numb));
+            }
         }
+
+        System.out.println("complete");
     }
 
+
+    /*정렬
+     1. root node가 변경될수 있다. 0이 아닌 경우
+     2. leaf node들은 언제든 레벨이 바뀔수 있다. & 부모와 자식도 바뀔수 있다.
+     */
 }

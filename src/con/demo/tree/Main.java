@@ -20,7 +20,7 @@ package con.demo.tree;
 import javax.swing.*;
 
 public class Main {
-    public static final boolean DEBUG_MODE = false;
+    public static final boolean DEBUG_MODE = true;
 
     public static void main(String[] args) {
 
