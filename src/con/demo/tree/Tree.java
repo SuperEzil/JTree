@@ -44,6 +44,8 @@ public class Tree {
             if (mNode == null) {
                 mNode = new Node(numb);
             }else{
+                if (!mNode.isRoot())
+                    mNode = mNode.getRoot();
                 mNode.addNode(new Node(numb));
             }
         }

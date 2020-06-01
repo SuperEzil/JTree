@@ -42,7 +42,12 @@ public class Node {
     public Node getRight() { return _Right; }
 
     public int getNumber() { return _Number; }
+    public Number  isNumber(){
+        if (_Number >= 0)
+            return Number.POSITIVE; // 양수
 
+            return Number.NEGATIVE; // 음수
+    }
     public int getLevel() {return _Level; }
     public void setLevel(int _Level) {this._Level = _Level; }
 
@@ -55,6 +60,17 @@ public class Node {
             return true;
 
         return false;
+    }
+
+    public Node getRoot(){
+        Node tmp = this;
+        while (true){
+            if (tmp.getParent() == null) {
+                return tmp;
+            }else {
+                tmp = tmp.getParent();
+            }
+        }
     }
 
     /**
@@ -98,9 +114,10 @@ public class Node {
     public int addNode(Node node){
         //1. 최상의 루트로 등록 되어야 하는 경우
         // 재귀함수 구조로 변경 필요
-        switch (this.compare(node)){
-            case LARGE ->addChild(node);
-            case LEFT -> {
+        // 음수 좌, 양수 우
+        switch (this.compare(node)){ //
+            case SMALL ->addChild(node);
+            case LARGE -> {
                 if (isRoot()){
                     setParent(node);
                 }else{
@@ -118,10 +135,10 @@ public class Node {
     }
 
     private void addChild(Node node) {
-        if (isLeaf()){
+        if (getChildCount() > 0){
             switch (getRight().compare(node)){
                 case LARGE -> addLeft(node);
-                case LEFT -> {
+                case SMALL -> {
                     this._Left = getRight();
                     this._Right = node;
                 }
@@ -140,7 +157,7 @@ public class Node {
         this._Parent = node;
         switch (node.compare(this)){
             case LARGE -> node.addRight(this);
-            case LEFT -> node.addLeft(this);
+            case SMALL -> node.addLeft(this);
             case SAME -> node.plusValue();
         }
     }
@@ -161,7 +178,7 @@ public class Node {
         if (this._Number > node.getNumber()) {
             return Compare.LARGE;
         }else if (this._Number < node.getNumber()){
-            return Compare.LEFT;
+            return Compare.SMALL;
         }
         return Compare.SAME;
     }
