@@ -6,31 +6,45 @@ package con.demo.tree.node;
 public class Node {
 
     private static int _Count = 0;
+
     {
         _Count++;
     }
-    /** 자신의 깊이값*/
+
+    /**
+     * 자신의 깊이값
+     */
     private int _Level = 0;
     private int _ValueCount = 0;
 
-    /** 부모 노드*/
+    /**
+     * 부모 노드
+     */
     private Node _Left;
-    /** 왼쪽 노드(작은)*/
+    /**
+     * 왼쪽 노드(작은)
+     */
     private Node _Right;
-    /** 오른쪽 노드(큰)*/
+    /**
+     * 오른쪽 노드(큰)
+     */
     private Node _Parent;
 
-    /** 자신의 값 */
+    /**
+     * 자신의 값
+     */
     private final int _Number;
+
     public Node(int number) {
         this._Number = number;
     }
 
     /**
      * 자신의 부모 노드 전달
+     *
      * @return
      */
-    public Node getParent(){
+    public Node getParent() {
         return _Parent;
     }
 
@@ -38,36 +52,51 @@ public class Node {
         this._Parent = _Parent;
     }
 
-    public Node getLeft() { return _Left;  }
-    public Node getRight() { return _Right; }
+    public Node getLeft() {
+        return _Left;
+    }
 
-    public int getNumber() { return _Number; }
-    public Number  isNumber(){
+    public Node getRight() {
+        return _Right;
+    }
+
+    public int getNumber() {
+        return _Number;
+    }
+
+    public Number getNumberLine() {
         if (_Number >= 0)
             return Number.POSITIVE; // 양수
 
-            return Number.NEGATIVE; // 음수
+        return Number.NEGATIVE; // 음수
     }
-    public int getLevel() {return _Level; }
-    public void setLevel(int _Level) {this._Level = _Level; }
+
+    public int getLevel() {
+        return _Level;
+    }
+
+    public void setLevel(int _Level) {
+        this._Level = _Level;
+    }
 
     /**
      * 루트 노드인가?
+     *
      * @return
      */
-    public boolean	isRoot(){
+    public boolean isRoot() {
         if (getParent() == null)
             return true;
 
         return false;
     }
 
-    public Node getRoot(){
+    public Node getRoot() {
         Node tmp = this;
-        while (true){
+        while (true) {
             if (tmp.getParent() == null) {
                 return tmp;
-            }else {
+            } else {
                 tmp = tmp.getParent();
             }
         }
@@ -75,9 +104,10 @@ public class Node {
 
     /**
      * 연결 노드인가?
+     *
      * @return
      */
-    public boolean	isLeaf(){
+    public boolean isLeaf() {
         if (getParent() != null && getChildCount() >= 1)
             return true;
 
@@ -86,12 +116,13 @@ public class Node {
 
     /**
      * 형제 노드가 있는지?
+     *
      * @return
      */
-    public boolean isSibling(){
-        if (!isRoot()){
-             if(getParent().getChildCount() >= 2)
-                 return true;
+    public boolean isSibling() {
+        if (!isRoot()) {
+            if (getParent().getChildCount() >= 2)
+                return true;
         }
         return false;
     }
@@ -111,53 +142,50 @@ public class Node {
     }
 
     ////////////////// add child/////////////////////////
-    public int addNode(Node node){
-        //1. 최상의 루트로 등록 되어야 하는 경우
-        // 재귀함수 구조로 변경 필요
-        // 음수 좌, 양수 우
-        switch (this.compare(node)){ //
-            case SMALL ->addChild(node);
-            case LARGE -> {
-                if (isRoot()){
-                    setParent(node);
-                }else{
-                    getParent().parentChanged(node);
+    public int addNode(Node node) {
+        if (isRoot() && getNumberLine() == Number.NEGATIVE && node.getNumberLine() == Number.POSITIVE){     // 루트이면서 음수인 경우에 추가 노드가 양수인 경우
+            setParent(node);
+        }else{
+            switch (this.compare(node)) {
+                case RIGHT ->{
+                    if (getRight() == null){
+                        addRight(node);
+                    }else{
+                        getRight().addNode(node);
+                    }
                 }
+                case LEFT -> {
+                    if (isRoot() && node.getNumberLine() == Number.POSITIVE){
+                        setParent(node);
+                    }else if(getLeft() == null){
+                        addLeft(node);
+                    }else {
+                        getLeft().addNode(node);
+                    }
+                }
+                case SAME -> this.plusValue();
             }
-            case SAME -> plusValue();
+
         }
-        //2. R로 저정되어야 하는가?
-        //3. L로 저정되어야 하는가?
-
-
 
         return getLevel();
     }
 
     private void addChild(Node node) {
-        if (getChildCount() > 0){
-            switch (getRight().compare(node)){
-                case LARGE -> addLeft(node);
-                case SMALL -> {
-                    this._Left = getRight();
-                    this._Right = node;
-                }
-                case SAME -> getRight().plusValue();
-            }
-        }else{
-            addRight(node);
-        }
     }
+
+
 
     /**
      * 부모 변경
-      * @param node
+     *
+     * @param node
      */
     private void parentChanged(Node node) {
         this._Parent = node;
-        switch (node.compare(this)){
-            case LARGE -> node.addRight(this);
-            case SMALL -> node.addLeft(this);
+        switch (node.compare(this)) {
+            case RIGHT -> node.addRight(this);
+            case LEFT -> node.addLeft(this);
             case SAME -> node.plusValue();
         }
     }
@@ -171,28 +199,32 @@ public class Node {
 
     /**
      * 노드 비교
+     *
      * @param node 대상 노드
      * @return {@link Compare }
      */
     private Compare compare(Node node) {
         if (this._Number > node.getNumber()) {
-            return Compare.LARGE;
-        }else if (this._Number < node.getNumber()){
-            return Compare.SMALL;
+            return Compare.LEFT;
+        } else if (this._Number < node.getNumber()) {
+            return Compare.RIGHT;
         }
         return Compare.SAME;
     }
 
 
     //
-    public int addLeft(Node node){
+    public int addLeft(Node node) {
+        node.setParent(this);
         this._Left = node;
         this._Left.setLevel(this._Level++);
 
         return this._Left.getLevel();
     }
 
-    public int addRight(Node node){
+    public int addRight(Node node) {
+
+        node.setParent(this);
         this._Right = node;
         this._Right.setLevel(this._Level++);
 

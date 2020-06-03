@@ -36,7 +36,8 @@ public class Tree {
         Random generator = new Random();
 
         for (int i = 0; i < range; i++) {
-          int numb = generator.nextInt(range);
+          //int numb = generator.nextInt(range);
+          int numb = generator.nextInt();
           if (Main.DEBUG_MODE){
                 System.out.println(String.format("Random index(%d): %d", i, numb));
           }
