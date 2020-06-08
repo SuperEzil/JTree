@@ -2,6 +2,7 @@ package con.demo.tree;
 
 import con.demo.tree.node.Node;
 
+import java.util.PrimitiveIterator;
 import java.util.Random;
 
 public class Tree {
@@ -33,11 +34,14 @@ public class Tree {
      *
      */
     public Tree(int range) {
+        PrimitiveIterator.OfInt randomIterator;
+
         Random generator = new Random();
+        randomIterator = generator.ints(-10,10).iterator();
 
         for (int i = 0; i < range; i++) {
           //int numb = generator.nextInt(range);
-          int numb = generator.nextInt();
+          int numb = randomIterator.nextInt();
           if (Main.DEBUG_MODE){
                 System.out.println(String.format("Random index(%d): %d", i, numb));
           }

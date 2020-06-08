@@ -26,7 +26,7 @@ public class Main {
 
         System.out.println("Hello World!!");
 
-        Tree tree = new Tree(10);
+        Tree tree = new Tree(20);
 
     }
 
